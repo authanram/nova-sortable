@@ -42,10 +42,9 @@ class SortableController
                 $orderColumnName = !empty($relatedModel->sortable['order_column_name']) ? $relatedModel->sortable['order_column_name'] : 'sort_order';
 
                 // Sort orderColumn values
-                $sortedOrder = $relatedModels->pluck($orderColumnName)->sort()->values();
                 foreach ($resourceIds as $i => $id) {
-                    $_model = $relatedModels->firstWhere('id', $id);
-                    $_model->{$orderColumnName} = $sortedOrder[$i];
+                    $_model = $relatedModels->firstWhere('id', $id)->pivot;
+                    $_model->{$orderColumnName} = $i + 1;
                     $_model->save();
                 }
             }

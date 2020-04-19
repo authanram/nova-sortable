@@ -22,9 +22,15 @@ trait HasSortableRows
 
     public static function indexQuery(NovaRequest $request, $query)
     {
+        $model = (new static::$model);
+        $sortOnPivot = in_array($request->input('relationshipType'), ['belongsTo', 'belongsToMany']);
+
+        if ($sortOnPivot || empty($model->sortable['order_column_name'])) {
+            return parent::indexQuery($request, $query);
+        }
+
         if (empty($request->get('orderBy'))) {
             $query->getQuery()->orders = [];
-            $model = (new static::$model);
             $orderColumn = !empty($model->sortable['order_column_name']) ? $model->sortable['order_column_name'] : 'sort_order';
             return $query->orderBy($orderColumn);
         }
